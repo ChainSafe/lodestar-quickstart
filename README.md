@@ -12,15 +12,9 @@ A comprehensive setup guide on how to use this merge script can be found here: h
 
 Look for the .vars file in the folder to see what networks are supported. Here are a few examples
 
-1. Kiln Network ( soon to be deprecated ): `--devnetVars ./kiln.vars`
-2. Ropsten Network: `--devnetVars ./ropsten.vars`
-3. Sepolia Network: `--devnetVars ./sepolia.vars`
-4. Goerli Network: `--devnetVars ./goerli.vars`
-5. Mainnet Shadow fork 9: `--devnetVars ./mainnetshadow-9.vars`
-
-#### And the much awaited Mainnet merge!
-
-Comming soon! but you can start prepping your nodes with `--devnetVars mainnet.vars` with has a high placeholder TTD.
+1. Sepolia Network: `--devnetVars ./sepolia.vars`
+2. Goerli Network: `--devnetVars ./goerli.vars`
+3. **Mainnet**: `--devnetVars ./mainnet.vars`
 
 ### Requirements
 
