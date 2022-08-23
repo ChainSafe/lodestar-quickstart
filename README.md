@@ -22,14 +22,7 @@ Look for the .vars file in the folder to see what networks are supported. Here a
 2. git
 3. A bash shell
 
-### Just run the script with arguments
-
-```bash
-cd merge-scripts
-./setup.sh --dataDir goerli-data --elClient nethermind --devnetVars ./goerli.vars [--dockerWithSudo --withTerminal "gnome-terminal --disable-factory --" --withValidator]
-```
-
-### Example scenarios
+### Example quickstart commands with arguments 
 
 1. Run with separate terminals launched & attached (best for testing in local) :
    `./setup.sh --dataDir goerli-data --elClient nethermind --devnetVars ./goerli.vars --withTerminal "gnome-terminal --disable-factory --" --dockerWithSudo `
