@@ -18,9 +18,9 @@ configGitDir=$CONFIG_GIT_DIR
 
 gethImage=$GETH_IMAGE
 nethermindImage=$NETHERMIND_IMAGE
+mevBoostImage=$MEV_BOOST_IMAGE
 
-
-mkdir $dataDir && mkdir $dataDir/lodestar && mkdir $dataDir/geth && mkdir $dataDir/nethermind && mkdir $dataDir/ethereumjs && mkdir $dataDir/besu && mkdir $dataDir/erigon
+mkdir $dataDir && mkdir $dataDir/lodestar && mkdir $dataDir/geth && mkdir $dataDir/nethermind && mkdir $dataDir/ethereumjs && mkdir $dataDir/besu && mkdir $dataDir/erigon && mkdir $dataDir/mevboost
 
 if [ -n "$configGitDir" ]
 then
@@ -75,8 +75,6 @@ run_cmd(){
   fi;
 }
 
-
-
 if [ -n "$dockerWithSudo" ]
 then 
   dockerExec="sudo docker"
@@ -128,9 +126,14 @@ then
     fi;
   fi;
 
-  if [ ! -n "$justEL" ]
+  if [ ! -n "$justEL" ] && [ ! -n "$justMevBoost" ]
   then
     $dockerExec pull $LODESTAR_IMAGE
+  fi;
+
+  if [ -n "$justMevBoost" ] || [ -n "$withMevBoost" ]
+  then
+    $dockerExec pull $MEV_BOOST_IMAGE
   fi;
 fi
 
@@ -227,6 +230,11 @@ else
 fi;
 clCmd="$clCmd $LODESTAR_EXTRA_ARGS"
 
+if [ -n "$withMevBoost" ]
+then
+  clCmd="$clCmd --builder --builder.urls $MEVBOOST_URL"
+fi;
+
 valName="$DEVNET_NAME-validator"
 # we are additionally mounting current dir to /currentDir if anyone wants to provide keystores
 valCmd="$dockerCmd --name $valName $clDockerNetwork -v $currentDir:/currentDir -v $currentDir/$dataDir:/data"
@@ -239,11 +247,16 @@ else
 fi;
 valCmd="$valCmd $LODESTAR_VALIDATOR_ARGS $validatorKeyArgs"
 
+if [ -n "$withMevBoost" ]
+then
+  valCmd="$valCmd --builder"
+fi;
+
 echo -n $JWT_SECRET > $dataDir/jwtsecret
 terminalInfo=""
 
-
-if [ ! -n "$justCL" ] && [ ! -n "$justVC" ]
+# if we don't have any of the just flags, we need to launch the EL
+if [ ! -n "$justCL" ] && [ ! -n "$justVC" ] && [ ! -n "$justMevBoost" ]
 then
   cleanupEL=true
   run_cmd "$elCmd"
@@ -264,7 +277,8 @@ then
    sleep 5
 fi
 
-if [ ! -n "$justEL" ] && [ ! -n "$justVC" ]
+# if we don't have any of the other just flags then we need to launch EL
+if [ ! -n "$justEL" ] && [ ! -n "$justVC" ] && [ ! -n "$justMevBoost" ]
 then
   cleanupCL=true
   run_cmd "$clCmd"
@@ -279,6 +293,7 @@ then
   fi;
 fi;
 
+# if we have validator start flags
 if [ -n "$withValidator" ] || [ -n "$justVC" ]
 then
   cleanupVAL=true
@@ -297,6 +312,30 @@ else
    valPid=$clPid
 fi;
 
+mevName="$DEVNET_NAME-mevboost"
+mevCmd="$dockerCmd --name $mevName $clDockerNetwork -v $currentDir/$dataDir:/data $mevBoostImage $MEVBOOST_VARS"
+
+# if we have mevBoost start flags, but not as justCL or justVC or justEL 
+# as then it only means to enable mevboost
+if ([ -n "$withMevBoost" ] && [ ! -n "$justCL" ] && [ ! -n "$justVC" ] && [ ! -n "$justEL" ]) || [ -n "$justMevBoost" ]
+then
+  cleanupMev=true
+  run_cmd "$mevCmd"
+  mevPid=$!
+  echo "mevPid= $mevPid"
+  terminalInfo="$terminalInfo, mevPid= $mevPid"
+  if [ -n "$justMevBoost" ]
+  then
+    # Just placeholder copy the pid into el and val pid as we do a multi wait on them later
+    elPid="$mevPid"
+    clPid="$mevPid"
+    valPid="$mevPid"
+  fi;
+else
+    # hack to assign clPid to mevPid for joint wait later
+    mevPid=$clPid
+fi;
+
 cleanup() {
   echo "cleaning up"
   # Cleanup only those that have been (tried) spinned up by this run of the script
@@ -312,14 +351,19 @@ cleanup() {
   then
     $dockerExec rm $valName -f
   fi
+  if [ -n "$cleanupMev" ]
+  then
+    $dockerExec rm $mevName -f
+  fi;
   elPid=null
   clPid=null
   valPid=null
+  mevPid=null
 }
 
 trap "echo exit signal recived;cleanup" SIGINT SIGTERM
 
-if [ ! -n "$detached" ] && [ -n "$elPid" ] && [ -n "$clPid" ] && ([ ! -n "$withValidator" ] || [ -n "$valPid" ] )
+if [ ! -n "$detached" ] && [ -n "$elPid" ] && [ -n "$clPid" ] && ([ ! -n "$withValidator" ] || [ -n "$valPid" ] ) && ([ ! -n "$withMevBoost" ] || [ -n "$mevPid" ])
 then 
 	echo "launched terminals for $terminalInfo"
 	echo "you can watch observe the client logs at the respective terminals"
@@ -330,15 +374,16 @@ then
 	  wait $elPid
 	  wait $clPid
     wait $valPid
+    wait $mevPid
 	else
-	  wait -n  $elPid $clPid $valPid 
+	  wait -n  $elPid $clPid $valPid $mevPid
 	fi
   echo "one of the el or cl process exited, stopping and cleanup"
 	cleanup
 fi;
 
 # if its not detached and is here, it means one of the processes exited/didn't launch
-if [ ! -n "$detached" ] && [ -n "$elPid$clPid$valPid" ]
+if [ ! -n "$detached" ] && [ -n "$elPid$clPid$valPid$mevPid" ]
 then
 	echo "one of the processes didn't launch properly"
 	cleanup

@@ -55,6 +55,14 @@ while [[ $# -gt 0 ]]; do
       skipImagePull=true
       shift # past argument
       ;;
+    --justMevBoost)
+      justMevBoost=true
+      shift
+      ;;
+    --withMevBoost)
+      withMevBoost=true
+      shift
+      ;;
     *)    # unknown option
       shift # past argument
       ;;

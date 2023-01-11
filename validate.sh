@@ -47,15 +47,28 @@ then
   exit;
 fi
 
-if [ -n "$withValidator" ] && ( [ -n "$justEL" ] || [ -n "$justEL" ] || [ -n "$justEL" ] )
+if [ -n "$justMevBoost" ] && ( [ -n "$justEL" ] || [ -n "$justCL" ] || [ -n "$justVC" ] || [ -n "$withValidator" ] )
 then
-  echo "--withValidator can not be just with --justEL or --justCL or --justVC. Try using only --justVC, exiting..."
+  echo "--justMevBoost can not be with --justEL or --justCL or --justVC or --withValidator. Try using only --justMevBoost, exiting..."
   exit;
 fi;
 
-if [ -n "$justEL" ] && ( [ -n "$justCL" ] || [ -n "$justVC" ]  ) || [ -n "$justCL" ] && ( [ -n "$justEL" ] || [ -n "$justVC" ]  ) || [ -n "$justVC" ] && ( [ -n "$justEL" ] || [ -n "$justCL" ]  )
+# withMevBoost can exist with justCl or justVC
+if [ -n "$withMevBoost" ] && ( [ -n "$justEL" ] )
 then
-  echo "only one of --justEL, --justCL or --justVC can be used at a time. You can however start another (parallel) run(s) to spin them up separately, exiting..."
+  echo "--withMevBoost can not be with --justEL or --justVC. exiting..."
+  exit;
+fi;
+
+if [ -n "$withValidator" ] && ( [ -n "$justEL" ] || [ -n "$justCL" ] || [ -n "$justMevBoost" ] )
+then
+  echo "--withValidator can not be just with --justEL or --justCL  or --justMevBoost, exiting..."
+  exit;
+fi;
+
+if [ -n "$justEL" ] && ( [ -n "$justCL" ] || [ -n "$justVC" ] || [ -n "$justMevBoost" ] ) || [ -n "$justCL" ] && ( [ -n "$justEL" ] || [ -n "$justVC" ]  ) || [ -n "$justVC" ] && ( [ -n "$justEL" ] || [ -n "$justCL" ] || [ -n "$justMevBoost" ] )
+then
+  echo "only one of --justEL, --justCL or --justVC or --justMevBoost can be used at a time. You can however start another (parallel) run(s) to spin them up separately, exiting..."
   exit;
 fi
 
