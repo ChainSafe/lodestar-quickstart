@@ -53,7 +53,8 @@ You can alternate between them (without needing to reset/cleanup) to experiment 
    You may use an alias or a terminal launching script as long as it waits for the command it runs till ends and then closes.If not provided, it will launch the docker processes in _in-terminal_ mode.
 6. `--detached`(optional): By default the script will wait for processes and use user input (ctrl +c) to end the processes, however you can pass this option to skip this behavior and just return, for e.g. in case you just want to leave it running.
 7. `--withValidatorKeystore | --withValidatorMnemonic` (optional): Launch a validator client using `LODESTAR_VALIDATOR_KEYSTORE_ARGS` or `LODESTAR_VALIDATOR_MNEMONIC_ARGS` as set in the devnet vars file.
-8. `--justEL | --justCL | --justVC` (optional) : Just launch only EL client or lodestar beacon or lodestar validator at any given time. Gives you more control over the setup.
+8. `withMevBoost`(optional): Also launch a `mev-boost` container to interface with multiple relays picket from the corresponding network vars (for e.g. from `mainnet.vars`). When paried with `--justCL` or `--justVC` this only activate the builder args in the beacon/validator and use the builder url set in `MEVBOOST_URL` variable in `fixed.vars`
+8. `--justEL | --justCL | --justVC | --justMevBoost` (optional) : Just launch only EL client or lodestar beacon or lodestar validator or `mev-boost` relay  at any given time. Gives you more control over the setup.
 9. `--skipImagePull` (optional): Just work with local images, don't try updating them.
 
 Only one of `--withTerminal` or `--detached` should be provided.
