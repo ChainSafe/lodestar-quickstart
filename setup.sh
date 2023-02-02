@@ -236,6 +236,13 @@ then
 fi;
 
 valName="$DEVNET_NAME-validator"
+if [ -n "$withValidatorKeystore" ]
+then
+  # generate an unique id with path for this particular validator
+  hash="$(echo -n "$withValidatorKeystore" | md5sum )"
+  hasharr=($hash)
+  valName="$valName-${hasharr[0]}"
+fi;
 # we are additionally mounting current dir to /currentDir if anyone wants to provide keystores
 valCmd="$dockerCmd --name $valName $clDockerNetwork -v $currentDir:/currentDir -v $currentDir/$dataDir:/data"
 if [ -n "$withValidatorKeystore" ]
