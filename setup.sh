@@ -238,6 +238,10 @@ fi;
 valName="$DEVNET_NAME-validator"
 # we are additionally mounting current dir to /currentDir if anyone wants to provide keystores
 valCmd="$dockerCmd --name $valName $clDockerNetwork -v $currentDir:/currentDir -v $currentDir/$dataDir:/data"
+if [ -n "$withValidatorKeystore" ]
+then
+  valCmd="$valCmd -v $withValidatorKeystore:/keystoresDir"
+fi
 # mount and use config
 if [ -n "$configGitDir" ]
 then

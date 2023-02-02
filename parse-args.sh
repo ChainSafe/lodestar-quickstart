@@ -32,8 +32,9 @@ while [[ $# -gt 0 ]]; do
       shift # past argument
       ;;
     --withValidatorKeystore)
-      withValidatorKeystore=true
+      withValidatorKeystore="$2"
       shift # past argument
+      shift # past value
       ;;
     --justEL)
       justEL=true
