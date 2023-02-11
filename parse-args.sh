@@ -13,8 +13,8 @@ while [[ $# -gt 0 ]]; do
       shift # past argument
       shift # past value
       ;;
-    --devnetVars)
-      devnetVars="$2"
+    --network)
+      network="$2"
       shift # past argument
       shift # past value
       ;;
@@ -74,12 +74,19 @@ done
 if [[ ! -n "$key" ]];
 then
   echo "usage: ./setup.sh --dataDir <data dir> --elClient <geth | nethermind | ethereumjs | besu | erigon> --devetVars <devnet vars file> [--dockerWithSudo --withTerminal --withMevBoost \"gnome-terminal --disable-factory --\"]"
-  echo "example: ./setup.sh --dataDir kiln-data --elClient nethermind --devnetVars ./kiln.vars --dockerWithSudo --withTerminal \"gnome-terminal --disable-factory --\""
+  echo "example: ./setup.sh --dataDir sepolia-data --elClient nethermind --network sepolia --dockerWithSudo --withTerminal \"gnome-terminal --disable-factory --\""
   echo "Note: if running on macOS where gnome-terminal is not available, remove the gnome-terminal related flags."
-  echo "example: ./setup.sh --dataDir kiln-data --elClient geth --devnetVars ./kiln.vars"
+  echo "example: ./setup.sh --dataDir sepolia-data --elClient geth --network sepolia"
   exit;
 fi;
 
+if [ -n "$network" ]
+then
+  devnetVars="$scriptDir/$network.vars"
+fi;
+
+echo "scriptDir = $scriptDir"
+echo "currentDir = $currentDir"
 echo "elClient = $elClient"
 echo "dataDir = $dataDir"
 echo "devnetVars = $devnetVars"
