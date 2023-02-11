@@ -1,3 +1,7 @@
+# BREAKING CHANGE
+
+Use `--network` flag instead of `--devnetVars` for e.g. `--network goerli` instead of `--devnetVars goerli.vars`
+
 # Easy script to join the Ethereum networks
 
 This is a setup to run and join the merge devnets, testnets (and mainnet soon!) with a single shell command. This script will pull the appropriate images and config and spin up the EL client and lodestar.
