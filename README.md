@@ -1,3 +1,7 @@
+# BREAKING CHANGE
+
+Use `--network` flag instead of `--devnetVars` for e.g. `--network goerli` instead of `--devnetVars goerli.vars`
+
 # Easy script to join the Ethereum networks
 
 This is a setup to run and join the merge devnets, testnets (and mainnet soon!) with a single shell command. This script will pull the appropriate images and config and spin up the EL client and lodestar.
@@ -10,11 +14,11 @@ A comprehensive setup guide on how to use this merge script can be found here: h
 
 ### Supported Networks
 
-Look for the .vars file in the folder to see what networks are supported. Here are a few examples
+Look for the .vars file in the folder to see what networks are supported. There is a .vars file corresponding to a each network which will be loaded. Here are a few examples
 
-1. Sepolia Network: `--devnetVars ./sepolia.vars`
-2. Goerli Network: `--devnetVars ./goerli.vars`
-3. **Mainnet**: `--devnetVars ./mainnet.vars`
+1. Sepolia Network: `--network sepolia` (reads `sepolia.vars`)
+2. Goerli Network: `--network goerli` (reads `goerli.vars`)
+3. **Mainnet**: `--network mainnet` (reads `mainnet.vars`)
 
 ### Requirements
 
@@ -25,11 +29,11 @@ Look for the .vars file in the folder to see what networks are supported. Here a
 ### Example quickstart commands with arguments 
 
 1. Run with separate terminals launched & attached (best for testing in local) :
-   `./setup.sh --dataDir goerli-data --elClient nethermind --devnetVars ./goerli.vars --withTerminal "gnome-terminal --disable-factory --" --dockerWithSudo `
+   `./setup.sh --dataDir goerli-data --elClient nethermind --network goerli --withTerminal "gnome-terminal --disable-factory --" --dockerWithSudo `
 2. Run _in-terminal_ attached with logs interleaved (best for testing in remote shell) :
-   `./setup.sh --dataDir goerli-data --elClient nethermind --devnetVars ./goerli.vars --dockerWithSudo`
+   `./setup.sh --dataDir goerli-data --elClient nethermind --network goerli --dockerWithSudo`
 3. Run detached (best for leaving it to run, typically after testing 1 or 2):
-   `./setup.sh --dataDir goerli-data --elClient nethermind --devnetVars ./goerli.vars --detached --dockerWithSudo`
+   `./setup.sh --dataDir goerli-data --elClient nethermind --network goerli --detached --dockerWithSudo`
 
 ### Supported EL clients
 
@@ -47,12 +51,13 @@ You can alternate between them (without needing to reset/cleanup) to experiment 
 
 1. `dataDir`: Where you want the script and client's configuration data to be setup. Should be non-existent one for the first run. (The directory if already present will skip fetching the configuration, assuming it has done previously). You can also clean indivizual directories of CL/EL between the re-runs.
 2. `elClient`: Which EL client you want, currently working with `geth` and `nethermind`
-3. `devnetVars`: Contains the configuration specific to a devnet, like images, or urls for EL/CL to interact. Will be updated with new vars.
+3. `network`: The network/chain you want to load, reads the corresponding `.vars` (for e.g. `goerli.vars`) network configuration , like images, or urls for EL/CL to interact. Will be updated with new vars.
 4. `dockerWithSudo`(optional): Provide this argument if your docker needs a sudo prefix
 5. `--withTerminal`(optional): Provide the terminal command prefix for CL and EL processes to run in your favourite terminal.
    You may use an alias or a terminal launching script as long as it waits for the command it runs till ends and then closes.If not provided, it will launch the docker processes in _in-terminal_ mode.
 6. `--detached`(optional): By default the script will wait for processes and use user input (ctrl +c) to end the processes, however you can pass this option to skip this behavior and just return, for e.g. in case you just want to leave it running.
-7. `--withValidatorKeystore | --withValidatorMnemonic` (optional): Launch a validator client using `LODESTAR_VALIDATOR_KEYSTORE_ARGS` or `LODESTAR_VALIDATOR_MNEMONIC_ARGS` as set in the devnet vars file.
+7. `--withValidatorKeystore | --withValidatorMnemonic` (optional): Launch a validator client using `LODESTAR_VALIDATOR_MNEMONIC_ARGS` (`--withValidatorMnemonic`) or using a folder (`--withValidatorKeystore <abs path to folder`) having `keystores` and `pass.txt` (which advance users may modify in `LODESTAR_VALIDATOR_KEYSTORE_ARGS` as per their setup).
+   Users can spin multiple validators using `--withValidatorMnemonic <folder path> --justVC` connecting to same beacon node.
 8. `--withMevBoost` (optional): Also launch a `mev-boost` container to interface with multiple relays picked for the corresponding network vars (for e.g. from `mainnet.vars`). When paired with `--justCL` or `--justVC` this only activate the builder args in the beacon/validator and use the builder url set in `MEVBOOST_URL` variable in `fixed.vars`
 8. `--justEL | --justCL | --justVC | --justMevBoost` (optional) : Just launch only EL client or lodestar beacon or lodestar validator or `mev-boost` relay  at any given time. Gives you more control over the setup.
 9. `--skipImagePull` (optional): Just work with local images, don't try updating them.

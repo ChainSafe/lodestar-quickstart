@@ -23,7 +23,12 @@ fi;
 
 if [ -n "$withValidatorKeystore" ]
 then
-  withValidator="withValidatorKeystore";
+  if [ ! -n "$(ls -A $withValidatorKeystore)" ]
+  then
+    echo "Can't access keystore dir: $withValidatorKeystore, please pass correct dir with keystores folder and pass.txt as arg value for --withValidatorKeystore, exiting..."
+    exit;
+  fi;
+  withValidator="true";
   validatorKeyArgs="$LODESTAR_VALIDATOR_KEYSTORE_ARGS"
   if [ ! -n "$validatorKeyArgs" ]
   then
