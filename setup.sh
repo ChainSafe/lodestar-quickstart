@@ -21,6 +21,13 @@ if [ -n SETUP_CONFIG_URL ]
 then
   setupConfigUrl="$SETUP_CONFIG_URL"
 fi;
+
+setupBranch="main"
+if [ -n SETUP_CONFIG_BRANCH ]
+then
+  setupBranch="$SETUP_CONFIG_BRANCH"
+fi;
+
 configGitDir=$CONFIG_GIT_DIR
 
 gethImage=$GETH_IMAGE
@@ -33,20 +40,26 @@ if [ -n "$configGitDir" ]
 then
   if [ ! -n "$(ls -A $dataDir/$configGitDir)" ]
   then
-    cd $dataDir && git init && git remote add -f origin $setupConfigUrl && git config core.sparseCheckout true && echo "$configGitDir/*" >> .git/info/sparse-checkout && git pull --depth=1 origin main && cd $currentDir
+    cd $dataDir && git init && git remote add -f origin $setupConfigUrl && git config core.sparseCheckout true && echo "$configGitDir/*" >> .git/info/sparse-checkout && git pull --depth=1 origin $setupBranch && cd $currentDir
   fi;
 
-  if [ ! -n "$(ls -A $dataDir/$configGitDir)" ] || [ ! -n "$(ls -A $dataDir/$configGitDir/genesis.json)" ] || [ ! -n "$(ls -A $dataDir/$configGitDir/genesis.ssz)" ] || [ ! -n "$(ls -A $dataDir/$configGitDir/nethermind_genesis.json)" ] || [ ! -n "$(ls -A $dataDir/$configGitDir/el_bootnode.txt)" ] || ( [ ! -n "$(ls -A $dataDir/$configGitDir/bootstrap_nodes.txt)" ] && [ ! -n "$(ls -A $dataDir/$configGitDir/boot_enr.yaml)" ] )
+  if [ ! -n "$(ls -A $dataDir/$configGitDir)" ] || [ ! -n "$(ls -A $dataDir/$configGitDir/genesis.ssz)" ] || ( [ ! -n "$(ls -A $dataDir/$configGitDir/el_bootnode.txt)" ] && [ ! -n "$(ls -A $dataDir/$configGitDir/bootnodes.txt)" ] ) || ( [ ! -n "$(ls -A $dataDir/$configGitDir/bootstrap_nodes.txt)" ] && [ ! -n "$(ls -A $dataDir/$configGitDir/boot_enr.yaml)" ] )
   then
     echo "Configuration directory not setup properly, remove the data directory and run again."
     echo "exiting ..."
     exit;
-  else 
-    if [ ! -n "$(ls -A $dataDir/$configGitDir/boot_enr.yaml)" ]
-    then
-      cp $dataDir/$configGitDir/bootstrap_nodes.txt $dataDir/$configGitDir/boot_enr.yaml
-    fi;
+  else
     echo "Configuration discovered!"
+  fi;
+
+  if [ ! -n "$(ls -A $dataDir/$configGitDir/boot_enr.yaml)" ]
+  then
+    cp $dataDir/$configGitDir/bootstrap_nodes.txt $dataDir/$configGitDir/boot_enr.yaml
+  fi;
+
+  if [ ! -n "$(ls -A $dataDir/$configGitDir/el_bootnode.txt)" ]
+  then
+    cp $dataDir/$configGitDir/bootnodes.txt $dataDir/$configGitDir/el_bootnode.txt
   fi;
 
   # Load the required variables from the config dir
@@ -148,6 +161,12 @@ if [ "$elClient" == "geth" ]
 then
   echo "gethImage: $GETH_IMAGE"
 
+  if [ -n "$configGitDir" ] && [ ! -n "$(ls -A $dataDir/$configGitDir/genesis.json)" ]
+  then
+    echo "geth genesis file not found in config, exiting... "
+    exit;
+  fi;
+
   elName="$DEVNET_NAME-geth"
   if [ ! -n "$(ls -A $dataDir/geth)" ] && [ -n "$configGitDir" ]
   then 
@@ -165,6 +184,12 @@ elif [ "$elClient" == "nethermind" ]
 then
   echo "nethermindImage: $NETHERMIND_IMAGE"
 
+  if [ -n "$configGitDir" ] && [ ! -n "$(ls -A $dataDir/$configGitDir/nethermind_genesis.json)" ]
+  then
+    echo "nethermind genesis file not found in config, exiting... "
+    exit;
+  fi;
+
   elName="$DEVNET_NAME-nethermind"
   elCmd="$dockerCmd --name $elName $elDockerNetwork -v $currentDir/$dataDir:/data"
   if [ -n "$configGitDir" ]
@@ -178,6 +203,12 @@ then
 elif [ "$elClient" == "ethereumjs" ] 
 then
   echo "ethereumjsImage: $ETHEREUMJS_IMAGE"
+
+  if [ -n "$configGitDir" ] && [ ! -n "$(ls -A $dataDir/$configGitDir/genesis.json)" ]
+  then
+    echo "ethereumjs genesis file not found in config, exiting... "
+    exit;
+  fi;
 
   elName="$DEVNET_NAME-ethereumjs"
   elCmd="$dockerCmd --name $elName $elDockerNetwork -v $currentDir/$dataDir:/data"
@@ -193,6 +224,12 @@ elif [ "$elClient" == "besu" ]
 then
   echo "besuImage: $BESU_IMAGE"
 
+  if [ -n "$configGitDir" ] && [ ! -n "$(ls -A $dataDir/$configGitDir/besu_genesis.json)" ]
+  then
+    echo "besu genesis file not found in config, exiting... "
+    exit;
+  fi;
+
   elName="$DEVNET_NAME-besu"
   elCmd="$dockerCmd --name $elName $elDockerNetwork -v $currentDir/$dataDir:/data"
   if [ -n "$configGitDir" ]
@@ -205,6 +242,12 @@ then
 elif [ "$elClient" == "erigon" ] 
 then
   echo "erigonImage: $ERIGON_IMAGE"
+
+  if [ -n "$configGitDir" ] && [ ! -n "$(ls -A $dataDir/$configGitDir/erigon_genesis.json)" ]
+  then
+    echo "erigon genesis file not found in config, exiting... "
+    exit;
+  fi;
 
   elName="$DEVNET_NAME-erigon"
   elCmd="$dockerCmd --name $elName $elDockerNetwork -v $currentDir/$dataDir:/data"
