@@ -59,7 +59,8 @@ You can alternate between them (without needing to reset/cleanup) to experiment 
 7. `--withValidatorKeystore | --withValidatorMnemonic` (optional): Launch a validator client using `LODESTAR_VALIDATOR_MNEMONIC_ARGS` (`--withValidatorMnemonic`) or using a folder (`--withValidatorKeystore <abs path to folder`) having `keystores` and `pass.txt` (which advance users may modify in `LODESTAR_VALIDATOR_KEYSTORE_ARGS` as per their setup).
    Users can spin multiple validators using `--withValidatorMnemonic <folder path> --justVC` connecting to same beacon node.
 8. `--withMevBoost` (optional): Also launch a `mev-boost` container to interface with multiple relays picked for the corresponding network vars (for e.g. from `mainnet.vars`). When paired with `--justCL` or `--justVC` this only activate the builder args in the beacon/validator and use the builder url set in `MEVBOOST_URL` variable in `fixed.vars`
-8. `--justEL | --justCL | --justVC | --justMevBoost` (optional) : Just launch only EL client or lodestar beacon or lodestar validator or `mev-boost` relay  at any given time. Gives you more control over the setup.
-9. `--skipImagePull` (optional): Just work with local images, don't try updating them.
+9. `--justEL | --justCL | --justVC | --justMevBoost` (optional) : Just launch only EL client or lodestar beacon or lodestar validator or `mev-boost` relay  at any given time. Gives you more control over the setup.
+10. `--skipImagePull` (optional): Just work with local images, don't try updating them.
+11. `LODESTAR_EXTRA_ARGS` for CL (and `LODESTAR_VALIDATOR_ARGS` for VC) in `.vars` file allows to supply additional parameters to enable features such as [Checkpoint Sync](https://chainsafe.github.io/lodestar/usage/beacon-management/#checkpoint-sync) (CL only) and [Client monitoring](https://chainsafe.github.io/lodestar/usage/client-monitoring/).
 
 Only one of `--withTerminal` or `--detached` should be provided.
