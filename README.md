@@ -18,7 +18,8 @@ Look for the .vars file in the folder to see what networks are supported. There 
 
 1. Sepolia Network: `--network sepolia` (reads `sepolia.vars`)
 2. Goerli Network: `--network goerli` (reads `goerli.vars`)
-3. **Mainnet**: `--network mainnet` (reads `mainnet.vars`)
+3. Holesky Network: `--network holesky` (reads `holesky.vars`)
+4. **Mainnet**: `--network mainnet` (reads `mainnet.vars`)
 
 ### Requirements
 
