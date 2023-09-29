@@ -17,9 +17,10 @@ A comprehensive setup guide on how to use this merge script can be found here: h
 Look for the .vars file in the folder to see what networks are supported. There is a .vars file corresponding to a each network which will be loaded. Here are a few examples
 
 1. Sepolia Network: `--network sepolia` (reads `sepolia.vars`)
-2. Goerli Network: `--network goerli` (reads `goerli.vars`)
-3. Holesky Network: `--network holesky` (reads `holesky.vars`)
-4. **Mainnet**: `--network mainnet` (reads `mainnet.vars`)
+2. Holesky Network: `--network holesky` (reads `holesky.vars`)
+3. **Mainnet**: `--network mainnet` (reads `mainnet.vars`)
+
+Goerli network has been removed as it has been deprecated/sunsetted.
 
 ### Requirements
 
