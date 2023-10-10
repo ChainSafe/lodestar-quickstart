@@ -40,10 +40,25 @@ if [ -n "$configGitDir" ]
 then
   if [ ! -n "$(ls -A $dataDir/$configGitDir)" ]
   then
-    cd $dataDir && git init && git remote add -f origin $setupConfigUrl && git config core.sparseCheckout true && echo "$configGitDir/*" >> .git/info/sparse-checkout && git pull --depth=1 origin $setupBranch && cd $currentDir
+    cmd="cd $dataDir && git init && git remote add -f origin $setupConfigUrl && git config core.sparseCheckout true && echo "$configGitDir/*" >> .git/info/sparse-checkout && git pull origin $setupBranch && cd $currentDir"
+    echo $cmd
+    cd $dataDir && git init && git remote add -f origin $setupConfigUrl && git config core.sparseCheckout true && echo "$configGitDir/*" >> .git/info/sparse-checkout && git pull origin $setupBranch && cd $currentDir
   fi;
 
-  if [ ! -n "$(ls -A $dataDir/$configGitDir)" ] || [ ! -n "$(ls -A $dataDir/$configGitDir/genesis.ssz)" ] || ( [ ! -n "$(ls -A $dataDir/$configGitDir/el_bootnode.txt)" ] && [ ! -n "$(ls -A $dataDir/$configGitDir/bootnodes.txt)" ] ) || ( [ ! -n "$(ls -A $dataDir/$configGitDir/bootstrap_nodes.txt)" ] && [ ! -n "$(ls -A $dataDir/$configGitDir/boot_enr.yaml)" ] )
+  if [ ! -n "$(ls -A $dataDir/$configGitDir/el_bootnode.txt)" ]
+  then
+    # one of the files will have el bootnodes
+    cp $dataDir/$configGitDir/bootnodes.txt $dataDir/$configGitDir/el_bootnode.txt
+    cp $dataDir/$configGitDir/bootnode.txt $dataDir/$configGitDir/el_bootnode.txt
+  fi;
+
+  if [ ! -n "$(ls -A $dataDir/$configGitDir/boot_enr.yaml)" ]
+  then
+    # one of the files will have cl bootnodes
+    cp $dataDir/$configGitDir/bootstrap_nodes.txt $dataDir/$configGitDir/boot_enr.yaml
+  fi;
+
+  if [ ! -n "$(ls -A $dataDir/$configGitDir)" ] || [ ! -n "$(ls -A $dataDir/$configGitDir/genesis.ssz)" ] || ( [ ! -n "$(ls -A $dataDir/$configGitDir/el_bootnode.txt)" ] ) || ( [ ! -n "$(ls -A $dataDir/$configGitDir/boot_enr.yaml)" ] )
   then
     echo "Configuration directory not setup properly, remove the data directory and run again."
     echo "exiting ..."
@@ -52,15 +67,7 @@ then
     echo "Configuration discovered!"
   fi;
 
-  if [ ! -n "$(ls -A $dataDir/$configGitDir/boot_enr.yaml)" ]
-  then
-    cp $dataDir/$configGitDir/bootstrap_nodes.txt $dataDir/$configGitDir/boot_enr.yaml
-  fi;
 
-  if [ ! -n "$(ls -A $dataDir/$configGitDir/el_bootnode.txt)" ]
-  then
-    cp $dataDir/$configGitDir/bootnodes.txt $dataDir/$configGitDir/el_bootnode.txt
-  fi;
 
   # Load the required variables from the config dir
   bootNode=$(cat $dataDir/$configGitDir/el_bootnode.txt)
@@ -171,7 +178,7 @@ then
   if [ ! -n "$(ls -A $dataDir/geth)" ] && [ -n "$configGitDir" ]
   then 
     echo "setting up geth directory"
-    $dockerExec run --rm -v $currentDir/$dataDir/$configGitDir:/config -v $currentDir/$dataDir/geth:/data $GETH_IMAGE --datadir /data init /config/genesis.json
+    $dockerExec run --rm -v $currentDir/$dataDir/$configGitDir:/config -v $currentDir/$dataDir/geth:/data $GETH_IMAGE $GETH_EXTRA_INIT_PARAMS --datadir /data init /config/genesis.json
   fi;
 
   elCmd="$dockerCmd --name $elName $elDockerNetwork -v $currentDir/$dataDir:/data $GETH_IMAGE $GETH_EXTRA_ARGS"
