@@ -416,18 +416,22 @@ cleanup() {
   # Cleanup only those that have been (tried) spinned up by this run of the script
   if [ -n "$cleanupEL" ]
   then
+    $dockerExec stop $elName
     $dockerExec rm $elName -f
   fi;
   if [ -n "$cleanupCL" ]
   then
+    $dockerExec stop $clName
     $dockerExec rm $clName -f
   fi;
   if [ -n "$cleanupVAL" ]
   then
+    $dockerExec stop $valName
     $dockerExec rm $valName -f
   fi
   if [ -n "$cleanupMev" ]
   then
+    $dockerExec stop $mevName
     $dockerExec rm $mevName -f
   fi;
   elPid=null
