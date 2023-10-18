@@ -51,11 +51,29 @@ then
     cp $dataDir/$configGitDir/bootnodes.txt $dataDir/$configGitDir/el_bootnode.txt
     cp $dataDir/$configGitDir/bootnode.txt $dataDir/$configGitDir/el_bootnode.txt
   fi;
+  # if there is a dynamic inventory url pull from there
+  if [ -n "$SETUP_CONFIG_INVENTORY_URL" ]
+  then
+    enodeCmd="curl $SETUP_CONFIG_INVENTORY_URL | jq -r ".ethereum_pairs[].execution.enode" > $dataDir/$configGitDir/el_bootnode.txt"
+    echo "------------------------------------------"
+    echo "fetching enodes: enodeCmd=$enodeCmd"
+    echo "------------------------------------------"
+    eval "$enodeCmd"
+  fi;
 
   if [ ! -n "$(ls -A $dataDir/$configGitDir/boot_enr.yaml)" ]
   then
     # one of the files will have cl bootnodes
     cp $dataDir/$configGitDir/bootstrap_nodes.txt $dataDir/$configGitDir/boot_enr.yaml
+  fi;
+  # if there is a dynamic inventory url pull from there
+  if [ -n "$SETUP_CONFIG_INVENTORY_URL" ]
+  then
+    bootenrCmd="curl $SETUP_CONFIG_INVENTORY_URL | jq -r ".ethereum_pairs[].consensus.enr" > $dataDir/$configGitDir/boot_enr.yaml"
+    echo "------------------------------------------"
+    echo "fetching enrs: bootenrCmd=$bootenrCmd"
+    echo "------------------------------------------"
+    eval "$bootenrCmd"
   fi;
 
   if [ ! -n "$(ls -A $dataDir/$configGitDir)" ] || [ ! -n "$(ls -A $dataDir/$configGitDir/genesis.ssz)" ] || ( [ ! -n "$(ls -A $dataDir/$configGitDir/el_bootnode.txt)" ] ) || ( [ ! -n "$(ls -A $dataDir/$configGitDir/boot_enr.yaml)" ] )
@@ -88,6 +106,7 @@ fi;
 
 run_cmd(){
   execCmd=$1;
+  echo "------------------------------------------"
   if [ -n "$detached" ]
   then
     echo "running detached: $execCmd"
@@ -100,6 +119,7 @@ run_cmd(){
     echo "running: $execCmd &"
     eval "$execCmd" &
   fi;
+  echo "------------------------------------------"
 }
 
 if [ -n "$dockerWithSudo" ]
@@ -176,9 +196,16 @@ then
 
   elName="$DEVNET_NAME-geth"
   if [ ! -n "$(ls -A $dataDir/geth)" ] && [ -n "$configGitDir" ]
-  then 
-    echo "setting up geth directory"
-    $dockerExec run --rm -v $currentDir/$dataDir/$configGitDir:/config -v $currentDir/$dataDir/geth:/data $GETH_IMAGE $GETH_EXTRA_INIT_PARAMS --datadir /data init /config/genesis.json
+  then
+    if [ ! -n "$GETH_INIT_IMAGE" ]
+    then
+      GETH_INIT_IMAGE=$GETH_IMAGE
+    fi;
+    elSetupCmd="$dockerExec run --rm -v $currentDir/$dataDir/$configGitDir:/config -v $currentDir/$dataDir/geth:/data $GETH_INIT_IMAGE $GETH_EXTRA_INIT_PARAMS --datadir /data init /config/genesis.json"
+    echo "------------------------------------------"
+    echo "setting up geth directory: $elSetupCmd"
+    echo "------------------------------------------"
+    $elSetupCmd
   fi;
 
   elCmd="$dockerCmd --name $elName $elDockerNetwork -v $currentDir/$dataDir:/data $GETH_IMAGE $GETH_EXTRA_ARGS"
