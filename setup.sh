@@ -5,6 +5,8 @@ scriptDir=$(dirname $0)
 currentDir=$(pwd)
 
 source parse-args.sh
+source import-images.sh
+source import-args.sh
 source "./fixed.vars"
 if [ ! -n "$devnetVars" ] 
 then
