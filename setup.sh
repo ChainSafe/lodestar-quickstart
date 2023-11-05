@@ -220,7 +220,7 @@ elif [ "$elClient" == "nethermind" ]
 then
   echo "nethermindImage: $NETHERMIND_IMAGE"
 
-  if [ -n "$configGitDir" ] && [ ! -n "$(ls -A $dataDir/$configGitDir/nethermind_genesis.json)" ]
+  if [ -n "$configGitDir" ] && [ ! -n "$(ls -A $dataDir/$configGitDir/chainspec.json)" ]
   then
     echo "nethermind genesis file not found in config, exiting... "
     exit;
@@ -230,7 +230,11 @@ then
   elCmd="$dockerCmd --name $elName $elDockerNetwork -v $currentDir/$dataDir:/data"
   if [ -n "$configGitDir" ]
   then
-    elCmd="$elCmd -v $currentDir/$dataDir/$configGitDir:/config  $NETHERMIND_IMAGE --Init.ChainSpecPath=/config/nethermind_genesis.json --Discovery.Bootnodes $EXTRA_BOOTNODES$bootNode"
+    elCmd="$elCmd -v $currentDir/$dataDir/$configGitDir:/config $NETHERMIND_IMAGE --Discovery.Bootnodes $EXTRA_BOOTNODES$bootNode"
+    if [ ! -n "$NETHERMIND_INBUILD_CONFIG" ]
+    then
+      elCmd="$elCmd --Init.ChainSpecPath=/config/chainspec.json"
+    fi;
   else
     elCmd="$elCmd $NETHERMIND_IMAGE"
   fi;
