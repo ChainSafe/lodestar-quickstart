@@ -31,11 +31,11 @@ Goerli network has been removed as it has been deprecated/sunsetted.
 ### Example quickstart commands with arguments 
 
 1. Run with separate terminals launched & attached (best for testing in local) :
-   `./setup.sh --dataDir goerli-data --elClient nethermind --network goerli --withTerminal "gnome-terminal --disable-factory --" --dockerWithSudo `
+   `./setup.sh --dataDir ./goerli-data --elClient nethermind --network goerli --withTerminal "gnome-terminal --disable-factory --" --dockerWithSudo `
 2. Run _in-terminal_ attached with logs interleaved (best for testing in remote shell) :
-   `./setup.sh --dataDir goerli-data --elClient nethermind --network goerli --dockerWithSudo`
+   `./setup.sh --dataDir ./goerli-data --elClient nethermind --network goerli --dockerWithSudo`
 3. Run detached (best for leaving it to run, typically after testing 1 or 2):
-   `./setup.sh --dataDir goerli-data --elClient nethermind --network goerli --detached --dockerWithSudo`
+   `./setup.sh --dataDir ./goerli-data --elClient nethermind --network goerli --detached --dockerWithSudo`
 
 ### Supported EL clients
 
