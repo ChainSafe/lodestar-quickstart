@@ -203,14 +203,14 @@ then
     then
       GETH_INIT_IMAGE=$GETH_IMAGE
     fi;
-    elSetupCmd="$dockerExec run --rm -v $currentDir/$dataDir/$configGitDir:/config -v $currentDir/$dataDir/geth:/data $GETH_INIT_IMAGE $GETH_EXTRA_INIT_PARAMS --datadir /data init /config/genesis.json"
+    elSetupCmd="$dockerExec run --rm -v $dataDir/$configGitDir:/config -v $dataDir/geth:/data $GETH_INIT_IMAGE $GETH_EXTRA_INIT_PARAMS --datadir /data init /config/genesis.json"
     echo "------------------------------------------"
     echo "setting up geth directory: $elSetupCmd"
     echo "------------------------------------------"
     $elSetupCmd
   fi;
 
-  elCmd="$dockerCmd --name $elName $elDockerNetwork -v $currentDir/$dataDir:/data $GETH_IMAGE $GETH_EXTRA_ARGS"
+  elCmd="$dockerCmd --name $elName $elDockerNetwork -v $dataDir:/data $GETH_IMAGE $GETH_EXTRA_ARGS"
   if [ -n "$configGitDir" ]
   then
     elCmd="$elCmd --bootnodes $EXTRA_BOOTNODES$bootNode"
@@ -227,10 +227,10 @@ then
   fi;
 
   elName="$DEVNET_NAME-nethermind"
-  elCmd="$dockerCmd --name $elName $elDockerNetwork -v $currentDir/$dataDir:/data"
+  elCmd="$dockerCmd --name $elName $elDockerNetwork -v $dataDir:/data"
   if [ -n "$configGitDir" ]
   then
-    elCmd="$elCmd -v $currentDir/$dataDir/$configGitDir:/config $NETHERMIND_IMAGE --Discovery.Bootnodes $EXTRA_BOOTNODES$bootNode"
+    elCmd="$elCmd -v $dataDir/$configGitDir:/config $NETHERMIND_IMAGE --Discovery.Bootnodes $EXTRA_BOOTNODES$bootNode"
     if [ ! -n "$NETHERMIND_INBUILD_CONFIG" ]
     then
       elCmd="$elCmd --Init.ChainSpecPath=/config/chainspec.json"
@@ -271,10 +271,10 @@ then
   fi;
 
   elName="$DEVNET_NAME-besu"
-  elCmd="$dockerCmd --name $elName $elDockerNetwork -v $currentDir/$dataDir:/data"
+  elCmd="$dockerCmd --name $elName $elDockerNetwork -v $dataDir:/data"
   if [ -n "$configGitDir" ]
   then
-    elCmd="$elCmd -v $currentDir/$dataDir/$configGitDir:/config  $BESU_IMAGE --genesis-file=/config/besu_genesis.json --bootnodes=$EXTRA_BOOTNODES$bootNode"
+    elCmd="$elCmd -v $dataDir/$configGitDir:/config  $BESU_IMAGE --genesis-file=/config/besu_genesis.json --bootnodes=$EXTRA_BOOTNODES$bootNode"
   else
     elCmd="$elCmd $BESU_IMAGE"
   fi;
@@ -290,10 +290,10 @@ then
   fi;
 
   elName="$DEVNET_NAME-erigon"
-  elCmd="$dockerCmd --name $elName $elDockerNetwork -v $currentDir/$dataDir:/data"
+  elCmd="$dockerCmd --name $elName $elDockerNetwork -v $dataDir:/data"
   if [ -n "$configGitDir" ]
   then
-    elCmd="$elCmd -v $currentDir/$dataDir/$configGitDir:/config  $ERIGON_IMAGE --bootnodes=$EXTRA_BOOTNODES$bootNode"
+    elCmd="$elCmd -v $dataDir/$configGitDir:/config  $ERIGON_IMAGE --bootnodes=$EXTRA_BOOTNODES$bootNode"
   else
     elCmd="$elCmd $ERIGON_IMAGE"
   fi;
@@ -332,24 +332,24 @@ then
   hash="$(echo -n "$withValidatorKeystore" | md5sum )"
   hasharr=($hash)
   keystoreDirHash="${hasharr[0]}"
-  mkdir "$currentDir/$dataDir/lodestar/$keystoreDirHash"
+  mkdir "$dataDir/lodestar/$keystoreDirHash"
 
   # keystoreDir is where the keystores are to be expected, keystores and pass.txt will be picked from here
   # also the validator db will be saved here which is very important for past validator choices
   actualKeystoreDir="$withValidatorKeystore"
-  actualDataDir="$currentDir/$dataDir/lodestar/$keystoreDirHash"
+  actualDataDir="$dataDir/lodestar/$keystoreDirHash"
   valName="$valName-${keystoreDirHash}"
 else
   # use current dir for keystore dir which will be used primarily for validator db here
   actualKeystoreDir="$currentDir"
-  actualDataDir="$currentDir/$dataDir/lodestar"
+  actualDataDir="$dataDir/lodestar"
 fi;
 # we are additionally mounting current dir to /currentDir if anyone wants to provide keystores
 valCmd="$dockerCmd --name $valName $clDockerNetwork -v $actualDataDir:/data -v $actualKeystoreDir:/keystoresDir"
 # mount and use config
 if [ -n "$configGitDir" ]
 then
-  valCmd="$valCmd -v $currentDir/$dataDir/$configGitDir:/config $LODESTAR_IMAGE validator --paramsFile /config/config.yaml"
+  valCmd="$valCmd -v $dataDir/$configGitDir:/config $LODESTAR_IMAGE validator --paramsFile /config/config.yaml"
 else
   valCmd="$valCmd $LODESTAR_IMAGE validator"
 fi;
