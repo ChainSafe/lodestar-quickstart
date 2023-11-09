@@ -251,10 +251,10 @@ then
   fi;
 
   elName="$DEVNET_NAME-ethereumjs"
-  elCmd="$dockerCmd --name $elName $elDockerNetwork -v $currentDir/$dataDir:/data"
+  elCmd="$dockerCmd --name $elName $elDockerNetwork -v $dataDir:/data"
   if [ -n "$configGitDir" ]
   then
-    elCmd="$elCmd -v $currentDir/$dataDir/$configGitDir:/config  $ETHEREUMJS_IMAGE --bootnodes=$EXTRA_BOOTNODES$bootNode"
+    elCmd="$elCmd -v $dataDir/$configGitDir:/config  $ETHEREUMJS_IMAGE --bootnodes=$EXTRA_BOOTNODES$bootNode"
   else
     elCmd="$elCmd $ETHEREUMJS_IMAGE"
   fi;
@@ -310,11 +310,11 @@ else
 fi
 
 clName="$DEVNET_NAME-lodestar"
-clCmd="$dockerCmd --env NODE_OPTIONS='--max_old_space_size=8192' --name $clName $clDockerNetwork -v $currentDir/$dataDir:/data"
+clCmd="$dockerCmd --env NODE_OPTIONS='--max_old_space_size=8192' --name $clName $clDockerNetwork -v $dataDir:/data"
 # mount and use config
 if [ -n "$configGitDir" ]
 then
-  clCmd="$clCmd -v $currentDir/$dataDir/$configGitDir:/config $LODESTAR_IMAGE beacon --paramsFile /config/config.yaml --genesisStateFile /config/genesis.ssz --eth1.depositContractDeployBlock $depositContractDeployBlock --bootnodesFile /config/boot_enr.yaml"
+  clCmd="$clCmd -v $dataDir/$configGitDir:/config $LODESTAR_IMAGE beacon --paramsFile /config/config.yaml --genesisStateFile /config/genesis.ssz --eth1.depositContractDeployBlock $depositContractDeployBlock --bootnodesFile /config/boot_enr.yaml"
 else
   clCmd="$clCmd $LODESTAR_IMAGE beacon"
 fi;
