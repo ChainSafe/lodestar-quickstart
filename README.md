@@ -1,6 +1,6 @@
 # BREAKING CHANGE
 
-Use `--network` flag instead of `--devnetVars` for e.g. `--network goerli` instead of `--devnetVars goerli.vars`
+Use `--network` flag instead of `--devnetVars` for e.g. `--network sepolia` instead of `--devnetVars sepolia.vars`
 
 # Easy script to join the Ethereum networks
 
@@ -31,11 +31,11 @@ Goerli network has been removed as it has been deprecated/sunsetted.
 ### Example quickstart commands with arguments 
 
 1. Run with separate terminals launched & attached (best for testing in local) :
-   `./setup.sh --dataDir goerli-data --elClient nethermind --network goerli --withTerminal "gnome-terminal --disable-factory --" --dockerWithSudo `
+   `./setup.sh --dataDir sepolia-data --elClient nethermind --network sepolia --withTerminal "gnome-terminal --disable-factory --" --dockerWithSudo `
 2. Run _in-terminal_ attached with logs interleaved (best for testing in remote shell) :
-   `./setup.sh --dataDir goerli-data --elClient nethermind --network goerli --dockerWithSudo`
+   `./setup.sh --dataDir sepolia-data --elClient nethermind --network sepolia --dockerWithSudo`
 3. Run detached (best for leaving it to run, typically after testing 1 or 2):
-   `./setup.sh --dataDir goerli-data --elClient nethermind --network goerli --detached --dockerWithSudo`
+   `./setup.sh --dataDir sepolia-data --elClient nethermind --network sepolia --detached --dockerWithSudo`
 
 ### Supported EL clients
 
@@ -53,7 +53,7 @@ You can alternate between them (without needing to reset/cleanup) to experiment 
 
 1. `dataDir`: Where you want the script and client's configuration data to be setup. Should be non-existent one for the first run. (The directory if already present will skip fetching the configuration, assuming it has done previously). You can also clean indivizual directories of CL/EL between the re-runs.
 2. `elClient`: Which EL client you want, currently working with `geth` and `nethermind`
-3. `network`: The network/chain you want to load, reads the corresponding `.vars` (for e.g. `goerli.vars`) network configuration , like images, or urls for EL/CL to interact. Will be updated with new vars.
+3. `network`: The network/chain you want to load, reads the corresponding `.vars` (for e.g. `sepolia.vars`) network configuration , like images, or urls for EL/CL to interact. Will be updated with new vars.
 4. `dockerWithSudo`(optional): Provide this argument if your docker needs a sudo prefix
 5. `--withTerminal`(optional): Provide the terminal command prefix for CL and EL processes to run in your favourite terminal.
    You may use an alias or a terminal launching script as long as it waits for the command it runs till ends and then closes.If not provided, it will launch the docker processes in _in-terminal_ mode.
