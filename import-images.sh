@@ -5,6 +5,11 @@ then
   GETH_IMAGE=ethereum/client-go:latest
 fi;
 
+if [ ! -n "$RETH_IMAGE" ]
+then
+  RETH_IMAGE=ethpandaops/reth:main
+fi;
+
 if [ ! -n "$NETHERMIND_IMAGE" ]
 then
   NETHERMIND_IMAGE=nethermind/nethermind:latest

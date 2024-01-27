@@ -34,9 +34,10 @@ configGitDir=$CONFIG_GIT_DIR
 
 gethImage=$GETH_IMAGE
 nethermindImage=$NETHERMIND_IMAGE
+rethImage=$RETH_IMAGE
 mevBoostImage=$MEV_BOOST_IMAGE
 
-mkdir $dataDir && mkdir $dataDir/lodestar && mkdir $dataDir/geth && mkdir $dataDir/nethermind && mkdir $dataDir/ethereumjs && mkdir $dataDir/besu && mkdir $dataDir/erigon && mkdir $dataDir/mevboost
+mkdir $dataDir && mkdir $dataDir/lodestar && mkdir $dataDir/geth && mkdir $dataDir/nethermind && mkdir $dataDir/reth && mkdir $dataDir/ethereumjs && mkdir $dataDir/besu && mkdir $dataDir/erigon && mkdir $dataDir/mevboost
 
 if [ -n "$configGitDir" ]
 then
@@ -163,6 +164,9 @@ then
     elif [ "$elClient" == "nethermind" ]
     then
       $dockerExec pull $NETHERMIND_IMAGE
+    elif [ "$elClient" == "reth" ]
+    then
+      $dockerExec pull $RETH_IMAGE
     elif [ "$elClient" == "ethereumjs" ]
     then
       $dockerExec pull $ETHEREUMJS_IMAGE
@@ -239,6 +243,26 @@ then
     elCmd="$elCmd $NETHERMIND_IMAGE"
   fi;
   elCmd="$elCmd $NETHERMIND_EXTRA_ARGS"
+
+elif [ "$elClient" == "reth" ] 
+then
+  echo "rethImage: $RETH_IMAGE"
+
+  if [ -n "$configGitDir" ] && [ ! -n "$(ls -A $dataDir/$configGitDir/reth.toml)" ]
+  then
+    echo "reth config file not found in config, exiting... "
+    exit;
+  fi;
+
+  elName="$DEVNET_NAME-reth"
+  elCmd="$dockerCmd --name $elName $elDockerNetwork -v $currentDir/$dataDir:/data"
+  if [ -n "$configGitDir" ]
+  then
+    elCmd="$elCmd -v $currentDir/$dataDir/$configGitDir:/config  $RETH_IMAGE node --config /config"
+  else
+    elCmd="$elCmd $RETH_IMAGE node"
+  fi;
+  elCmd="$elCmd $RETH_EXTRA_ARGS"
 
 elif [ "$elClient" == "ethereumjs" ] 
 then
