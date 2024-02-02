@@ -18,7 +18,8 @@ Look for the .vars file in the folder to see what networks are supported. There 
 
 1. Sepolia Network: `--network sepolia` (reads `sepolia.vars`)
 2. Holesky Network: `--network holesky` (reads `holesky.vars`)
-3. **Mainnet**: `--network mainnet` (reads `mainnet.vars`)
+3. Verkle Kautinen 3: `--network kaustinen3` (reads `kaustinen3.vars`)
+4. **Mainnet**: `--network mainnet` (reads `mainnet.vars`)
 
 Goerli network has been removed as it has been deprecated/sunsetted.
 
