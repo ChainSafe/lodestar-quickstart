@@ -4,7 +4,7 @@ Use `--network` flag instead of `--devnetVars` for e.g. `--network sepolia` inst
 
 # Easy script to join the Ethereum networks
 
-This is a setup to run and join the merge devnets, testnets (and mainnet soon!) with a single shell command. This script will pull the appropriate images and config and spin up the EL client and lodestar.
+This is a setup to run and join the merge devnets, testnets, shadowforks and mainnet as well! with a single shell command. This script will pull the appropriate images and config and spin up the EL client and lodestar.
 
 This script is borne out of need to simplify putting together the various moving parts of the post merge ethereum setup so that the users can have super fast onboarding, easy switch/test EL clients as well as can take inspiration for how to match/debug the configurations for their customized setups.
 
