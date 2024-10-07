@@ -84,9 +84,9 @@ then
 fi;
 
 
-if [ -n "$justCL" ] && [ -n "$justVC" ]  && ([ "$elClient" != "geth" ] && [ "$elClient" != "nethermind" ] && [ "$elClient" != "ethereumjs" ] && [ "$elClient" != "besu" ] && [ "$elClient" != "erigon" ]) 
+if [ -n "$justCL" ] && [ -n "$justVC" ]  && ([ "$elClient" != "geth" ] && [ "$elClient" != "nethermind" ] && [ "$elClient" != "reth" ] && [ "$elClient" != "ethereumjs" ] && [ "$elClient" != "besu" ] && [ "$elClient" != "erigon" ]) 
 then
-  echo "To run EL client you need to provide one of --elClient <geth | nethermind | ethereumjs | besu | erigon>, exiting ...";
+  echo "To run EL client you need to provide one of --elClient <geth | nethermind | reth | ethereumjs | besu | erigon>, exiting ...";
   exit;
 fi
 
