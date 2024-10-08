@@ -38,7 +38,7 @@ rethImage=$RETH_IMAGE
 mevBoostImage=$MEV_BOOST_IMAGE
 
 if [[ "$dataDir" != /* ]]; then
-  dataDir="$currentDir"
+  dataDir="$currentDir/$dataDir"
 fi
 
 mkdir $dataDir && mkdir $dataDir/lodestar && mkdir $dataDir/geth && mkdir $dataDir/nethermind && mkdir $dataDir/reth && mkdir $dataDir/ethereumjs && mkdir $dataDir/besu && mkdir $dataDir/erigon && mkdir $dataDir/mevboost
