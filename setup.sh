@@ -37,6 +37,10 @@ nethermindImage=$NETHERMIND_IMAGE
 rethImage=$RETH_IMAGE
 mevBoostImage=$MEV_BOOST_IMAGE
 
+if [[ "$dataDir" != /* ]]; then
+  dataDir="$currentDir"
+fi
+
 mkdir $dataDir && mkdir $dataDir/lodestar && mkdir $dataDir/geth && mkdir $dataDir/nethermind && mkdir $dataDir/reth && mkdir $dataDir/ethereumjs && mkdir $dataDir/besu && mkdir $dataDir/erigon && mkdir $dataDir/mevboost
 
 if [ -n "$configGitDir" ]
