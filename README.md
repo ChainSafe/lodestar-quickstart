@@ -20,7 +20,7 @@ Look for the .vars file in the folder to see what networks are supported. There 
 2. Holesky Network: `--network holesky` (reads `holesky.vars`)
 3. Sepolia Network: `--network sepolia` (reads `sepolia.vars`)
 4. Verkle Kautinen 6: `--network kaustinen6` (reads `kaustinen6.vars`)
-4. Pectra devnet 3: `--network pectra3` (reads `pectra3.vars`)
+5. Pectra devnet 4: `--network pectra4` (reads `pectra4.vars`)
 
 Goerli network has been removed as it has been deprecated/sunsetted.
 
