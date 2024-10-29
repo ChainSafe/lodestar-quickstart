@@ -57,6 +57,7 @@ then
     # one of the files will have el bootnodes
     cp $dataDir/$configGitDir/bootnodes.txt $dataDir/$configGitDir/el_bootnode.txt
     cp $dataDir/$configGitDir/bootnode.txt $dataDir/$configGitDir/el_bootnode.txt
+    cp $dataDir/$configGitDir/enodes.txt $dataDir/$configGitDir/el_bootnode.txt
   fi;
   # if there is a dynamic inventory url pull from there
   if [ -n "$SETUP_CONFIG_INVENTORY_URL" ]
