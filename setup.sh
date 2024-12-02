@@ -338,8 +338,16 @@ else
   clDockerNetwork="--network host"
 fi
 
-clName="$DEVNET_NAME-lodestar"
-clCmd="$dockerCmd --env NODE_OPTIONS='--max_old_space_size=$LODESTAR_HEAP' --name $clName $clDockerNetwork -v $dataDir:/data"
+# if $LODESTAR_HEAP is not set in *.vars, use 8192 by default
+if [ -z $LODESTAR_HEAP ]
+then
+  clName="$DEVNET_NAME-lodestar"
+  clCmd="$dockerCmd --env NODE_OPTIONS='--max_old_space_size=8192' --name $clName $clDockerNetwork -v $dataDir:/data"
+else
+  clName="$DEVNET_NAME-lodestar"
+  clCmd="$dockerCmd --env NODE_OPTIONS='--max_old_space_size=$LODESTAR_HEAP' --name $clName $clDockerNetwork -v $dataDir:/data"
+fi
+
 # mount and use config
 if [ -n "$configGitDir" ]
 then
