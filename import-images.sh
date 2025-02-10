@@ -2,7 +2,7 @@
 
 if [ ! -n "$GETH_IMAGE" ]
 then
-  GETH_IMAGE=ethereum/client-go:latest
+  GETH_IMAGE=ethereum/client-go:stable
 fi;
 
 if [ ! -n "$RETH_IMAGE" ]
