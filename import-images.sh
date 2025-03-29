@@ -7,7 +7,7 @@ fi;
 
 if [ ! -n "$RETH_IMAGE" ]
 then
-  RETH_IMAGE=ethpandaops/reth:main
+  RETH_IMAGE=ghcr.io/paradigmxyz/reth:latest
 fi;
 
 if [ ! -n "$NETHERMIND_IMAGE" ]
