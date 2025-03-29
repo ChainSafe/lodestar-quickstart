@@ -27,7 +27,7 @@ fi;
 
 if [ ! -n "$ERIGON_IMAGE" ]
 then
-  ERIGON_IMAGE=thorax/erigon:stable
+  ERIGON_IMAGE=erigontech/erigon:latest
 fi;
 
 if [ ! -n "$MEV_BOOST_IMAGE" ]
