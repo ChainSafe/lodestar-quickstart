@@ -260,7 +260,7 @@ then
   fi;
 
   elName="$DEVNET_NAME-reth"
-  elCmd="$dockerCmd --name $elName $elDockerNetwork -v $currentDir/$dataDir:/data"
+  elCmd="$dockerCmd --name $elName $elDockerNetwork -v $dataDir:/data"
   if [ -n "$configGitDir" ]
   then
     elCmd="$elCmd -v $currentDir/$dataDir/$configGitDir:/config  $RETH_IMAGE node --config /config"

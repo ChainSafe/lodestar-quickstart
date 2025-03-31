@@ -7,7 +7,7 @@ fi;
 
 if [ ! -n "$RETH_IMAGE" ]
 then
-  RETH_IMAGE=ethpandaops/reth:main
+  RETH_IMAGE=ghcr.io/paradigmxyz/reth:latest
 fi;
 
 if [ ! -n "$NETHERMIND_IMAGE" ]
@@ -27,7 +27,7 @@ fi;
 
 if [ ! -n "$ERIGON_IMAGE" ]
 then
-  ERIGON_IMAGE=thorax/erigon:stable
+  ERIGON_IMAGE=erigontech/erigon:latest
 fi;
 
 if [ ! -n "$MEV_BOOST_IMAGE" ]
