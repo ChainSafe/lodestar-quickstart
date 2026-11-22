@@ -105,8 +105,6 @@ then
   bootEnr=($bootEnr)
   bootEnr=$(IFS=" " ; echo "${bootEnr[*]}")
 
-  depositContractDeployBlock=$(cat $dataDir/$configGitDir/deposit_contract_block.txt)
-
 else
   echo "No configuration specified, assuming the configuration baked in the images and args appropriately set to use it!"
 fi;
@@ -343,7 +341,7 @@ clCmd="$dockerCmd --env NODE_OPTIONS='--max_old_space_size=8192' --name $clName 
 # mount and use config
 if [ -n "$configGitDir" ]
 then
-  clCmd="$clCmd -v $dataDir/$configGitDir:/config $LODESTAR_IMAGE beacon --paramsFile /config/config.yaml --genesisStateFile /config/genesis.ssz --eth1.depositContractDeployBlock $depositContractDeployBlock --bootnodesFile /config/boot_enr.yaml"
+  clCmd="$clCmd -v $dataDir/$configGitDir:/config $LODESTAR_IMAGE beacon --paramsFile /config/config.yaml --genesisStateFile /config/genesis.ssz --bootnodesFile /config/boot_enr.yaml"
 else
   clCmd="$clCmd $LODESTAR_IMAGE beacon"
 fi;
